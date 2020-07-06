@@ -1,0 +1,9 @@
+<aura:component implements="lightning:isUrlAddressable,force:lightningQuickActionWithoutHeader,force:hasRecordId" controller="AssetMoveRequest_Controller">
+    <aura:attribute name="accountId" type="String" />
+    <aura:attribute name="assetId" type="String" />
+    <aura:attribute name="objectType" type="String" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <c:assetMoveRequest accountId="{!v.accountId}" assetId="{!v.assetId}" recordId="{!v.recordId}" objectType="{!v.objectType}" />
+</aura:component>	

@@ -1,0 +1,150 @@
+<template>    
+    <lightning-card class="container">
+        <h3 slot="title">
+            {moveRequestName}
+        </h3>
+        
+        <lightning-button-group slot="actions">
+            <lightning-button label={labels.cancel.label} icon-name="utility:back" onclick={handleCancelButtonClick}></lightning-button>
+            <template if:false={isFirstStep}>
+                <lightning-button label={labels.prev.label} title={labels.prev.label} icon-name="utility:chevronleft" onclick={handlePrevButtonClick}></lightning-button>
+            </template>
+            <template if:false={isLastStep}>
+                <lightning-button label={labels.next.label} title={labels.next.label} icon-name="utility:chevronright" onclick={handleNextButtonClick}></lightning-button>
+            </template>
+            <!--
+            <template if:false={isStepOne}>
+                <lightning-button label={labels.next.label} icon-name="utility:chevronright" onclick={handleNextButtonClick}></lightning-button>
+            </template>
+            <template if:true={isLastStep}>
+                <lightning-button label={labels.save.label} icon-name="utility:save" onclick={handleSaveButtonClick}></lightning-button>
+            </template>
+        -->
+        </lightning-button-group>
+    
+        <lightning-layout>
+            <lightning-layout-item size="12" small-device-size="12" large-device-size="9">
+
+                <template if:true={isFirstStep}>
+                    <div class="slds-m-around_small">
+                        <h3 class="slds-text-title_caps slds-m-bottom_medium">What type of Asset do you want to do?</h3>
+                        <div class="content selection">
+                            <template for:each={assetTypeOptions} for:item="option">
+                                <c-selectable-tile key={option.value} obj-record-id={option.value} title={option.label} onselected={handleAssetTypeOptionSelected}></c-selectable-tile>
+                            </template>    
+                        </div>
+                    </div>
+                </template>
+                <template if:true={isSecondStep}>    
+                    <div class="slds-m-around_small">
+                        <h3 class="slds-text-title_caps slds-m-bottom_medium">Are you placing this asset in an account or having it picked up?</h3>
+                        <div class="content selection">
+                            <template for:each={placementPickupOptions} for:item="option">
+                                <c-selectable-tile key={option.value} obj-record-id={option.value} title={option.label} onselected={handlePlacementPickupSelected}></c-selectable-tile>
+                            </template>    
+                        </div>
+                    </div>
+                </template>
+
+                <template if:true={isThirdStep}>
+                    <div class="slds-m-around_small">
+                        <h3 class="slds-text-title_caps slds-m-bottom_medium">Is this a NEW placement or are you moving the asset from one account to another?</h3>
+                        <div class="content selection">
+                            <template for:each={placementTypeOptions} for:item="option">
+                                <c-selectable-tile key={option.value} obj-record-id={option.value} title={option.label} onselected={handlePlacementTypeSelected}></c-selectable-tile>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+                <template if:true={isFourthStep}>
+                    <template if:true={isFridgeMove}>
+
+                    </template>
+                    <template if:true={isLongTermMove}>
+                        <lightning-layout>
+                            <lightning-layout-item size="12" small-device-size="12" large-device-size="4" padding="around-small" class="slds-border_right">
+                                <lightning-layout multiple-rows="true" class="slds-m-right_small">
+                                    <lightning-layout-item size="12" class="slds-m-around_small" >
+                                        <lightning-input type="search" is-searching={isSearchingForAccount} label={labels.searchForAccount.label} onchange={handleSearchForAccountChange}></lightning-input>
+                                        <lightning-button label={labels.search.label} icon-name="utility:search" icon-position="right" class="slds-m-top_x-small slds-float_right" onclick={handleSearchForAccountButtonClick}></lightning-button>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="12" class="slds-m-horizontal_small">
+                                        <div class="content accounts">
+                                            <template for:each={accounts} for:item="account">
+                                                <c-selectable-tile key={account.Id} obj-record-id={account.Id} title={account.Name} text-line1={account.AccountNumber} onselected={handleAccountSelected} ></c-selectable-tile>
+                                            </template>
+                                        </div>        
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" small-device-size="12" large-device-size="8">
+                                <lightning-card>
+                                    <div slot="title">
+                                        <h3>{accountName}</h3>
+                                        <span class="slds-text-title_caps">{accountAddress}</span>
+                                    </div>
+                                    <div class="content accountassets">
+                                        <template if:true={account}>
+                                            <template if:true={account.Assets__r}>
+                                                <template if:true={account.Assets__r.length}>
+                                                    <template for:each={account.Assets__r} for:item="asset">
+                                                        <c-selectable-tile key={asset.Id} obj-record-id={asset.Id} title={asset.Name} text-line1={asset.Serial__c} obj-record={asset} image-field-name="Image_Name__c" image-position="left"></c-selectable-tile>
+                                                    </template>
+                                                </template>
+                                            </template>
+                                        </template>
+                                    </div>
+                                    <div class="content assets">
+                                        <template if:true={assetsForRequestType}>
+                                            <template if:true={assetsForRequestType.length}>
+                                                <template for:each={assetsForRequestType} for:item="asset">
+                                                    <c-selectable-tile key={asset.Id} obj-record-id={asset.Id} title={asset.Name} text-line1={asset.Serial__c} obj-record={asset} image-field-name="Image_Name__c" image-position="left" onselected={handleAssetSelected} ></c-selectable-tile>
+                                                </template>
+                                            </template>
+                                        </template>
+                                    </div>
+                                </lightning-card>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </template>
+                    <template if:true={isSuperPremiumMove}>
+
+                    </template>
+                </template>
+            </lightning-layout-item>
+            <template if:false={isPhone}>
+                <template if:false={isConfirmingDetails}>
+                    <lightning-layout-item size="3" class="slds-border_left slds-m-left_small">
+                        <lightning-layout multiple-rows="true">
+                            <lightning-layout-item size="12" padding="around-small">
+                                <p class="slds-text-title_caps">{labels.assetType.label}</p>
+                                {assetTypeName}
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" padding="around-small">
+                                <p class="slds-text-title_caps">{labels.typeOfMove.label}</p>
+                                {moveTypeName}
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" padding="around-small">
+                                <p class="slds-text-title_caps">{dateLabel}</p>
+                                <lightning-formatted-date-time value={moveDate} year="numeric" month="long" day="2-digit" weekday="long"></lightning-formatted-date-time>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" padding="around-small">
+                                <p class="slds-text-title_caps">{fromAccountLabel}</p>
+                                {fromAccountName}
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" padding="around-small">
+                                <p class="slds-text-title_caps">{labels.asset.label}</p>
+                                {assetDescription}
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12" padding="around-small">
+                                <p class="slds-text-title_caps">{toAccountLabel}</p>
+                                {toAccountName}
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </lightning-layout-item>
+                </template>
+            </template>
+        </lightning-layout>
+
+    </lightning-card>
+</template>

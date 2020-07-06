@@ -1,0 +1,46 @@
+.container {
+    background-color: #fff;
+}
+
+.content {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.selection c-selectable-tile {
+    margin: 0 2rem;
+    min-width: 300px;
+    min-height: 300px;
+}
+.accounts c-selectable-tile {
+    margin: 0.5rem;
+    max-width: 250px;    
+}
+
+.assets c-selectable-tile {
+    margin: 0.5rem;
+    max-width: 250px;
+}
+
+.slidein {
+    animation: 3s ease-in forwards slidein;
+}
+.slide-to-left {
+    animation: 1s forwards slidetoleft;
+}
+.fadeout {
+    animation: 2s forwards fadeout;
+}
+
+@keyframes slidein {
+    from { margin-left: 100%; opacity: 0 }
+    to { margin-left: 50%; opacity: 1 }
+}
+@keyframes slidetoleft {
+    from { margin-left: 50%; }
+    to { margin-left: 10%; }
+}
+@keyframes fadeout {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}

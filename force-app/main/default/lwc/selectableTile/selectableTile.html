@@ -1,0 +1,23 @@
+<template>
+    <div class={tileClass}>
+        <a onclick={handleClick}>
+            <div class="content slds-align_absolute-center">
+                <lightning-layout multiple-rows="true" vertical-align="center">                    
+                    <template if:true={pictureUrl}>
+                        <lightning-layout-item size="12">
+                            <img src={pictureUrl} class="product slds-m-around_x-small" alt="Product picture" />
+                        </lightning-layout-item>
+                    </template>                
+                    <lightning-layout-item size="12">
+                        <div class="slds-align_absolute-center">
+                            <p class="title slds-m-bottom_x-small" style="word-wrap:normal;">{title}</p>
+                        </div>                                
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12">
+                        {textLine1}
+                    </lightning-layout-item>
+                </lightning-layout>    
+            </div>
+        </a>
+    </div>
+</template>
